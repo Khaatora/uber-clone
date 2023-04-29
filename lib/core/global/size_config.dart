@@ -10,7 +10,7 @@ class SizeConfig {
   static late double _safeAreaVertical;
   static late double safeBlockHorizontal;
   static late double safeBlockVertical;
-
+  static late double statusBarHeight;
   void init(BuildContext context){
     _mediaQueryData = MediaQuery.of(context);
     screenWidth = _mediaQueryData.size.width;
@@ -23,5 +23,6 @@ class SizeConfig {
         _mediaQueryData.padding.bottom;
     safeBlockHorizontal = (screenWidth - _safeAreaHorizontal)/100;
     safeBlockVertical = (screenHeight - _safeAreaVertical)/100;
+    statusBarHeight = _mediaQueryData.viewPadding.top;
   }
 }

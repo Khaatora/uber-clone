@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "803858023512",
+    "project_id": "uber-own",
+    "storage_bucket": "uber-own.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:803858023512:android:04b1cd01973e5e79bd362d",
+        "android_client_info": {
+          "package_name": "com.senseicoder.uber_own"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "803858023512-psev88qsmc105ophbpn2ro2qjb01dnbt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABWv5b0ETk2GAwH4blIrmR5PlGtIM9e7g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "803858023512-psev88qsmc105ophbpn2ro2qjb01dnbt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
