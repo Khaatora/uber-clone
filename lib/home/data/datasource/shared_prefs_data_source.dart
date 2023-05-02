@@ -1,4 +1,5 @@
- import 'dart:convert';
+import 'dart:convert';
+import 'dart:developer';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uber_own/core/errors/exceptions/exceptions.dart';
@@ -7,39 +8,42 @@ import 'package:uber_own/home/data/models/user_shared_prefs_data_model.dart';
 
 import '../../../core/services/services_locator.dart';
 
- abstract class SharedPrefsSource{
-   bool isReady = false;
+abstract class SharedPrefsSource {
+  bool isReady = false;
+
   Future<UserSharedPreferenceDataModel> getData();
+
   Future<void> addData(SharedPrefsDataParams params);
 }
 
-class SharedPrefsDataSource extends SharedPrefsSource{
-   final String cachedUserDataKey = "CachedUserData";
+class SharedPrefsDataSource extends SharedPrefsSource {
+  final String cachedUserDataKey = "CachedUserData";
+
   @override
-  Future<UserSharedPreferenceDataModel> getData() async{
-    if(!isReady) await _slIsReady();
+  Future<UserSharedPreferenceDataModel> getData() async {
+    if (!isReady) await _slIsReady();
     final prefs = sl<SharedPreferences>();
     final keys = prefs.getKeys();
-    if(keys.isEmpty) {
-     throw const CacheException("prefs is empty");
+    if (keys.isEmpty) {
+      throw const CacheException("prefs is empty");
     }
     final prefsMap = <String, dynamic>{};
-    for(String key in keys) {
+
+    for (String key in keys) {
       prefsMap[key] = prefs.get(key);
     }
-    return UserSharedPreferenceDataModel.fromJson(prefsMap);
+    prefsMap.forEach((key, value) => log("Key: $key, Value: $value"));
+    return UserSharedPreferenceDataModel.fromJson(json.decode(prefsMap[cachedUserDataKey]));
   }
 
   @override
   Future<void> addData(SharedPrefsDataParams params) async {
-    if(!isReady) await _slIsReady();
+    if (!isReady) await _slIsReady();
     final prefs = sl<SharedPreferences>();
     prefs.setString(cachedUserDataKey, json.encode(params.toJson()));
-
   }
 
-  Future<void> _slIsReady(){
-     return sl.isReady<SharedPreferences>().then((value) => isReady = true);
+  Future<void> _slIsReady() {
+    return sl.isReady<SharedPreferences>().then((value) => isReady = true);
   }
-
 }
