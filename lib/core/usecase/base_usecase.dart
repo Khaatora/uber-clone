@@ -27,10 +27,13 @@ class PhoneNumberDetailsParams extends Equatable{
   final String phoneNumber;
   final String verificationId;
   final String smsCode;
+  void Function(String verificationId, int? forceResendingToken)? codeSent;
+  void Function(String verificationId)? codeAutoRetrievalTimeout;
 
-  const PhoneNumberDetailsParams(this.phoneNumber, [this.verificationId ='', this.smsCode= '']);
+  PhoneNumberDetailsParams(this.phoneNumber,
+      {this.verificationId = '', this.smsCode = '', this.codeSent, this.codeAutoRetrievalTimeout});
 
   @override
-  List<Object?> get props => [phoneNumber];
+  List<Object?> get props => [phoneNumber, verificationId, smsCode, codeSent, codeAutoRetrievalTimeout];
 
 }
