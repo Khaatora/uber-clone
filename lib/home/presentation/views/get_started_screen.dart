@@ -52,7 +52,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
       child: Scaffold(
         body: Padding(
           padding: EdgeInsets.only(
-            top: SizeConfig.statusBarHeight+16,
+            top: SizeConfig.statusBarHeight + 16,
             bottom: 16.0,
             left: 16.0,
             right: 16.0,
@@ -63,21 +63,27 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
               switch (state.verificationState) {
                 case VerificationState.init:
                   break;
-                case VerificationState.completed:
+                case VerificationState.caching:
                   UserDetailsBloc.get(listenerContext)
                       .add(CacheDataEvent(state.phoneNum!));
+                  break;
+                case VerificationState.completed:
                   Navigator.pushReplacementNamed(listenerContext, Routes.home);
                   break;
                 case VerificationState.awaitingUserInput:
-                  _pageController.animateToPage(2, duration: const Duration(milliseconds: 300), curve: Curves.fastOutSlowIn);
+                  _pageController.animateToPage(2,
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.fastOutSlowIn);
+                  break;
+                case VerificationState.awaitingVerificationId:
                   break;
                 case VerificationState.failed:
                 case VerificationState.verifying:
-                case VerificationState.resendingCode:
                 case VerificationState.error:
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text(state.message!),
-                  ));
+                  WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(SnackBar(content: Text(state.message!)));
+                  });
               }
             },
             child: PageView(
@@ -103,8 +109,7 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                                   selection: TextSelection.fromPosition(
                                       TextPosition(offset: currentOffset)));
                             },
-                            initialValue: PhoneNumber(
-                                isoCode: "EG"),
+                            initialValue: PhoneNumber(isoCode: "EG"),
                             countries: FirebaseConstants.supportedCountryCodes,
                             inputBorder: const OutlineInputBorder(),
                             selectorConfig: const SelectorConfig(
@@ -129,8 +134,9 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                                     },
                                     text: EnglishLocalization.Next,
                                   );
-                                case VerificationState.resendingCode:
+                                case VerificationState.awaitingVerificationId:
                                 case VerificationState.verifying:
+                                case VerificationState.caching:
                                   return const Center(
                                       child:
                                           CircularProgressIndicator.adaptive());
@@ -182,7 +188,9 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                             prefixIcon: FontAwesomeIcons.facebook,
                           ),
                           SecondaryElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+
+                            },
                             text: EnglishLocalization.continueWithGoogle,
                             style: Theme.of(context)
                                 .elevatedButtonTheme
@@ -211,10 +219,12 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Expanded(
-                          child: BlocBuilder<UserDetailsBloc,UserDetailsState>(
-                            buildWhen: (previous, current) => current.verificationState == VerificationState.awaitingUserInput,
+                          child: BlocBuilder<UserDetailsBloc, UserDetailsState>(
+                            buildWhen: (previous, current) =>
+                                current.verificationState ==
+                                VerificationState.awaitingUserInput,
                             builder: (context, state) {
-                              return  Text(
+                              return Text(
                                 "${EnglishLocalization.otpMainText} \n${state.phoneNum}",
                               );
                             },
@@ -239,7 +249,8 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                                     overlayColor:
                                         const MaterialStatePropertyAll<Color>(
                                             Colors.black12),
-                            textStyle: MaterialStatePropertyAll(Theme.of(context).textTheme.bodySmall)),
+                                    textStyle: MaterialStatePropertyAll(
+                                        Theme.of(context).textTheme.bodySmall)),
                             child: const Text(
                                 EnglishLocalization.iDidntReceiveCode)),
                         ElevatedButton(
@@ -257,20 +268,27 @@ class _GetStartedScreenState extends State<GetStartedScreen> {
                                     overlayColor:
                                         const MaterialStatePropertyAll<Color>(
                                             Colors.black12),
-                                textStyle: MaterialStatePropertyAll(Theme.of(context).textTheme.bodySmall)),
+                                    textStyle: MaterialStatePropertyAll(
+                                        Theme.of(context).textTheme.bodySmall)),
                             child: const Text(
                                 EnglishLocalization.loginWithPassword)),
-                        const Expanded(flex: 7,child: SizedBox()),
-                        Builder(
-                          builder: (context) {
-                            return IconButton(onPressed: () {
-                              UserDetailsBloc.get(context).add(ReturnToFirstScreenEvent());
-                              _pageController.previousPage(duration: const Duration(milliseconds: 300), curve: Curves.fastOutSlowIn);
-                            }, icon: const Icon(Icons.arrow_back), style: const ButtonStyle(
-                              backgroundColor: MaterialStatePropertyAll(Colors.black12),
-                            ),);
-                          }
-                        )
+                        const Expanded(flex: 7, child: SizedBox()),
+                        Builder(builder: (context) {
+                          return IconButton(
+                            onPressed: () {
+                              UserDetailsBloc.get(context)
+                                  .add(ReturnToFirstScreenEvent());
+                              _pageController.previousPage(
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.fastOutSlowIn);
+                            },
+                            icon: const Icon(Icons.arrow_back),
+                            style: const ButtonStyle(
+                              backgroundColor:
+                                  MaterialStatePropertyAll(Colors.black12),
+                            ),
+                          );
+                        })
                       ],
                     ),
                   ),

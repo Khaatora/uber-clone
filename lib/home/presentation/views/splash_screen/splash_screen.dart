@@ -31,7 +31,7 @@ class SplashScreen extends StatelessWidget {
                   delayedPushReplacementNamedWithRoute(context, route: Routes.getStarted, delayedSeconds: 1);
                 }
               }else{
-                delayedPushReplacementNamedWithRoute(context, route: Routes.greeting, delayedSeconds: 1);
+                delayedPushReplacementNamedWithRoute(context, route: Routes.home, delayedSeconds: 1);
               }
             },
             child: Center(
