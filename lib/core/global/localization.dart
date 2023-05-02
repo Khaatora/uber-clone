@@ -22,6 +22,7 @@ class EnglishLocalization {
   static const String InvalidPhoneNumberErrorMessage = "the phone number is invalid, make sure you entered the correct phone number and try again";
 
 
+
     // SecondPage Text
   static const String otpMainText =
       "Enter the 4-digit code sent you at ";
