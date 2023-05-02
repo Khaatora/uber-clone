@@ -11,7 +11,7 @@ class VerifyUserPhoneUseCase extends IUseCase<void, PhoneNumberDetailsParams>{
   VerifyUserPhoneUseCase(this.userRepository);
 
   @override
-  Future<Either<Failure, void>> call(params) {
+  Future<Either<Failure, void>> call(PhoneNumberDetailsParams params) {
     return userRepository.verifyUserPhone(params);
   }
 
