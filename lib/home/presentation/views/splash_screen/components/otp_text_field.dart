@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -71,7 +72,6 @@ class _OTPTextFieldState extends State<OTPTextField> {
       onCompleted: (code) async{
         //do something or move to next screen when code complete
         var bloc = UserDetailsBloc.get(context);
-        log("onComplted ${bloc.state.phoneNum!}, verification ID: ${await bloc.getVerificationIdStreamController.stream.last}");
         bloc.add(SendVerificationInfoEvent(bloc.state.phoneNum!, code));
       },
       onChanged: (value) {
