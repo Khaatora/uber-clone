@@ -1,11 +1,11 @@
 import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:uber_own/core/errors/exceptions/exceptions.dart';
 import 'package:uber_own/core/global/localization.dart';
+import 'package:uber_own/core/utils/enums/sign_in_method.dart';
 import 'package:uber_own/core/utils/enums/verification_enums.dart';
-import 'package:uber_own/home/presentation/controller/user_details_bloc.dart';
-
 import '../../../core/services/services_locator.dart';
 import '../../../core/usecase/base_usecase.dart';
 import '../models/MyUserModel.dart';
@@ -14,6 +14,10 @@ abstract class UserDataSource {
   Future<void> getPhoneNumberCode(PhoneNumberDetailsParams params);
 
   Future<MyUserModel> verifyOTP(PhoneNumberDetailsParams params);
+
+  Future<MyUserModel> googleSignIn();
+
+
 }
 
 class UserRemoteDataSource extends UserDataSource {
@@ -28,7 +32,6 @@ class UserRemoteDataSource extends UserDataSource {
       verificationCompleted: (PhoneAuthCredential credential) async {
         //auto completes verification
         await firebaseAuthInstance.signInWithCredential(credential);
-        return;
       },
       verificationFailed: (FirebaseAuthException e) {
         log(e.toString());
@@ -39,20 +42,12 @@ class UserRemoteDataSource extends UserDataSource {
             throw const InternalException();
           default:
             log(e.toString());
-            throw const PhoneVerificationException(
+            throw const GenericException(
                 EnglishLocalization.GenericFirebaseErrorMessage);
         }
       },
-      codeSent: (String verificationId, int? resendToken) {
-        //code is sent
-        sl<UserDetailsBloc>().getVerificationIdStreamController.add(verificationId);
-        log(verificationId);
-      },
-      codeAutoRetrievalTimeout: (String verificationId) {
-        //retrieval timeout
-        sl<UserDetailsBloc>().getVerificationIdStreamController.add(verificationId);
-        log(verificationId);
-      },
+      codeSent: params.codeSent!,
+      codeAutoRetrievalTimeout: params.codeAutoRetrievalTimeout!
     );
   }
 
@@ -66,7 +61,7 @@ class UserRemoteDataSource extends UserDataSource {
       credentials.user == null
           ? throw const SignInFailedException()
           : user = MyUserModel(
-              credentials.user!.phoneNumber, VerificationState.completed);
+              credentials.user!.phoneNumber, VerificationState.caching);
       return user;
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
@@ -81,9 +76,50 @@ class UserRemoteDataSource extends UserDataSource {
           throw const InvalidPhoneNumberException();
         default:
           log(e.toString());
-          throw const PhoneVerificationException(
+          throw const GenericException(
               EnglishLocalization.GenericFirebaseErrorMessage);
       }
     }
   }
+
+  @override
+  Future<MyUserModel> googleSignIn() async {
+    try {
+      final GoogleSignInAccount? gUser = await sl<GoogleSignIn>().signIn();
+      final GoogleSignInAuthentication gAuth = await gUser!.authentication;
+      final credential = GoogleAuthProvider.credential(
+            accessToken:  gAuth.accessToken,
+            idToken: gAuth.idToken,
+          );
+      final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+      final user = MyUserModel.fromCredential(userCredential, SignInMethod.google);
+      return user;
+    } on FirebaseAuthException catch (e) {
+      switch(e.message){
+        case "wrong-password":
+          throw const SignInFailedException();
+        default:
+          throw const GenericException();
+      }
+
+      //**account-exists-with-different-credential**:
+      // Thrown if there already exists an account with the email address asserted by the credential. Resolve this by calling fetchSignInMethodsForEmail and then asking the user to sign in using one of the returned providers. Once the user is signed in, the original credential can be linked to the user with linkWithCredential.
+      // **invalid-credential**:
+      // Thrown if the credential is malformed or has expired.
+      // **operation-not-allowed**:
+      // Thrown if the type of account corresponding to the credential is not enabled. Enable the account type in the Firebase Console, under the Auth tab.
+      // **user-disabled**:
+      // Thrown if the user corresponding to the given credential has been disabled.
+      // **user-not-found**:
+      // Thrown if signing in with a credential from EmailAuthProvider.credential and there is no user corresponding to the given email.
+      // **wrong-password**:
+      // Thrown if signing in with a credential from EmailAuthProvider.credential and the password is invalid for the given email, or if the account corresponding to the email does not have a password set.
+      // **invalid-verification-code**:
+      // Thrown if the credential is a PhoneAuthProvider.credential and the verification code of the credential is not valid.
+      // **invalid-verification-id**:
+      // Thrown if the credential is a PhoneAuthProvider.credential and the verification ID of the credential is not valid.id.
+    }
+  }
+
+
 }
