@@ -1,5 +1,6 @@
 
 import 'package:get_it/get_it.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uber_own/core/network/network_info.dart';
@@ -45,5 +46,8 @@ class ServicesLocator{
 
     // NetworkImpl
     sl.registerLazySingleton<INetworkInfo>(() => ICCNetworkInfo(sl()));
+
+    // GoogleSignIn Instance
+    sl.registerLazySingleton<GoogleSignIn>(() => GoogleSignIn());
   }
 }
