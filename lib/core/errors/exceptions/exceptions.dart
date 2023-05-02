@@ -5,6 +5,14 @@ class ServerException implements Exception{
  const ServerException([this.message = EnglishLocalization.GenericFirebaseErrorMessage]);
 }
 
+class CacheException implements Exception{
+  final String message;
+
+  const CacheException(this.message);
+}
+
+
+
 class InternalException extends ServerException{
 
   const InternalException([super.message = EnglishLocalization.GenericFirebaseErrorMessage]);
@@ -28,19 +36,12 @@ class SignInFailedException extends ServerException{
 
 
   const SignInFailedException([super.message = EnglishLocalization.SignInErrorMessage]);
-}class InvalidPhoneNumberException extends ServerException{
+}
+class InvalidPhoneNumberException extends ServerException{
 
 
   const InvalidPhoneNumberException([super.message = EnglishLocalization.InvalidPhoneNumberErrorMessage]);
 }
-
-
-class CacheException implements Exception{
-  final String message;
-
-  const CacheException(this.message);
-}
-
-class PhoneVerificationException extends ServerException{
-  const PhoneVerificationException(super.message);
+class GenericException extends ServerException{
+  const GenericException([super.message = EnglishLocalization.GenericFirebaseErrorMessage]);
 }
