@@ -7,7 +7,7 @@ class EnglishLocalization {
     //  FirstPage Text
   static const String enterYourMobileNumber = "Enter your mobile number";
   static const String hintMobileNumber = "Enter your mobile number";
-  static const String Next = "Next";
+  static const String next = "Next";
   static const String loginMainText =
       "By continuing you may receive an SMS fo verification. Message and data rates may apply";
   static const String continueWithFacebook = "Continue With Facebook";
@@ -20,6 +20,7 @@ class EnglishLocalization {
   static const String InvalidCodeErrorMessage = "The code entered is incorrect, make sure you enter the correct code and try again.";
   static const String SignInErrorMessage = "sign in failed, please try again";
   static const String InvalidPhoneNumberErrorMessage = "the phone number is invalid, make sure you entered the correct phone number and try again";
+  static const String InvalidCredentialsErrorMessage = "Sign in failed, Either you took too long or something happened while signing you in, please try again";
 
 
 
@@ -30,4 +31,25 @@ class EnglishLocalization {
   static const String loginWithPassword = "Login with password";
     //validation
   static const String emptyPhoneNumber = "Enter A phone Number";
+
+    // ThirdPage Text
+  static const String uberCommunityGuidelines = "Uber's Community Guidelines";
+
+  static const String safetyAndRespectForAll = "Safety and respect for all";
+
+  static const String weAreCommited= "We're commited, along with millions of riders and drivers, to:";
+
+  static const String treatEveryoneWithRespect = "Treat eveyrone with kindness and respect";
+
+  static const String helpKeepOneAnotherSafe= "Help keep one another safe";
+
+  static const String followTheLaw = "Follow the law";
+
+  static const String everyOneWhoUsesUberAppsIs = "Everyone who uses Uber apps is expected to follow these guidelines";
+
+  static const String youCanReadAboutOur = "You can read about our ";
+
+  static const String communityGuidelinesHere = "Community Guidelines here";
+
+  static const String iUnderstand = "I Understand";
 }

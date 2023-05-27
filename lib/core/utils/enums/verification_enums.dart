@@ -1,6 +1,7 @@
 enum VerificationState{
   init,
   caching,
+  awaitingAgreemnt,
   completed,
   failed,
   verifying,

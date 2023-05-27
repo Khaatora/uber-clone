@@ -37,6 +37,11 @@ class SignInFailedException extends ServerException{
 
   const SignInFailedException([super.message = EnglishLocalization.SignInErrorMessage]);
 }
+class InvalidCredentialsExceptions extends ServerException{
+
+
+  const InvalidCredentialsExceptions([super.message = EnglishLocalization.InvalidCredentialsErrorMessage]);
+}
 class InvalidPhoneNumberException extends ServerException{
 
 

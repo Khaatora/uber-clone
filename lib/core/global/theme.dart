@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 class AppTheme{
   static final light = ThemeData(
+      useMaterial3: true,
     textTheme: const TextTheme(
       displaySmall: TextStyle(
           fontSize: 16,
@@ -13,7 +14,6 @@ class AppTheme{
         color: Colors.white
       )
     ),
-    useMaterial3: true,
     scaffoldBackgroundColor: Colors.white,
       elevatedButtonTheme: const ElevatedButtonThemeData(
         style: ButtonStyle(
